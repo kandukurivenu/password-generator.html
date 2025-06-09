@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Elegant Password Generator</title>
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --text: #2b2d42;
+      --light-gray: #f8f9fa;
+      --border: #e9ecef;
+      --shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 30px;
+      width: 100%;
+      max-width: 420px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .password-display {
+      background: var(--light-gray);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      word-break: break-all;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .password-display:hover {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+    }
+    
+    .copied-message {
+      color: #27ae60;
+      font-size: 0.9rem;
+      text-align: center;
+      margin: -15px 0 15px;
+      height: 20px;
+      font-weight: 500;
+    }
+    
+    .controls {
+      margin-bottom: 25px;
+    }
+    
+    .control-group {
+      margin-bottom: 18px;
+    }
+    
+    label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.95rem;
+    }
+    
+    input[type="range"] {
+      width: 100%;
+      margin: 12px 0;
+      height: 6px;
+      border-radius: 3px;
+      background: #e0e0e0;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+    }
+    
+    input[type="checkbox"] {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+    
+    .generate-btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .generate-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    
+    .length-value {
+      font-weight: bold;
+      color: var(--primary);
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function PasswordGenerator() {
+      const [password, setPassword] = React.useState('');
+      const [length, setLength] = React.useState(14);
+      const [includeUppercase, setIncludeUppercase] = React.useState(true);
+      const [includeNumbers, setIncludeNumbers] = React.useState(true);
+      const [includeSymbols, setIncludeSymbols] = React.useState(true);
+      const [copied, setCopied] = React.useState(false);
+
+      const generatePassword = () => {
+        const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+        const uppercase = includeUppercase ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' : '';
+        const numbers = includeNumbers ? '0123456789' : '';
+        const symbols = includeSymbols ? '!@#$%^&*()_+-=[]{}|;:,.<>?' : '';
+
+        const allChars = lowercase + uppercase + numbers + symbols;
+        let newPassword = '';
+
+        for (let i = 0; i < length; i++) {
+          const randomIndex = Math.floor(Math.random() * allChars.length);
+          newPassword += allChars[randomIndex];
+        }
+
+        setPassword(newPassword);
+        setCopied(false);
+      };
+
+      const copyToClipboard = () => {
+        if (!password) return;
+        navigator.clipboard.writeText(password);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      };
+
+      React.useEffect(() => {
+        generatePassword();
+      }, [length, includeUppercase, includeNumbers, includeSymbols]);
+
+      return (
+        <div className="card">
+          <h1>Secure Password Generator</h1>
+          
+          <div className="password-display" onClick={copyToClipboard}>
+            {password || 'Generating...'}
+          </div>
+          
+          <div className="copied-message">
+            {copied ? '✓ Copied to clipboard!' : ''}
+          </div>
+
+          <div className="controls">
+            <div className="control-group">
+              <label>
+                Password Length: <span className="length-value">{length}</span>
+              </label>
+              <input
+                type="range"
+                min="8"
+                max="32"
+                value={length}
+                onChange={(e) => setLength(parseInt(e.target.value))}
+              />
+            </div>
+
+            <div className="control-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={includeUppercase}
+                  onChange={() => setIncludeUppercase(!includeUppercase)}
+                />
+                Uppercase Letters (A-Z)
+              </label>
+            </div>
+
+            <div className="control-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={includeNumbers}
+                  onChange={() => setIncludeNumbers(!includeNumbers)}
+                />
+                Numbers (0-9)
+              </label>
+            </div>
+
+            <div className="control-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={includeSymbols}
+                  onChange={() => setIncludeSymbols(!includeSymbols)}
+                />
+                Symbols (!@#$)
+              </label>
+            </div>
+          </div>
+
+          <button className="generate-btn" onClick={generatePassword}>
+            Generate New Password
+          </button>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<PasswordGenerator />, document.getElementById('root'));
+  </script>
+</body>
+</html>
