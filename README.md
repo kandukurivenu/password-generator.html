@@ -2,7 +2,7 @@
 A simple, elegant, and secure password generator built with React.js.
 🔒 Generate strong passwords instantly with customizable options.
 
-Features
+Features<br>
 ✅ Custom password length (8-32 characters)<br>
 ✅ Toggle character types:
 
@@ -27,3 +27,15 @@ Adjust length with the slider
 Toggle character types as needed
 
 Click "Generate" or tap the password to copy it.
+
+Why Use This?<br>
+✔ No dependencies (just React + vanilla JS)<br>
+✔ Lightweight (single HTML file)<br>
+✔ Secure (all generation happens in your browser)<br>
+✔ Open-source (modify freely)<br>
+
+License
+📄 MIT License - Free for personal and commercial use.
+
+Credits
+Developed with ❤️ K.Venu
